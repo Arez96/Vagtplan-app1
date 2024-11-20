@@ -24,7 +24,7 @@ function Home() {
           cursor: "pointer",
         }}
       >
-        Profil
+        Profiler
       </button>
     </div>
   );
