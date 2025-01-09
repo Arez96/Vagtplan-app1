@@ -14,7 +14,7 @@ function Navbar() {
       if (user) {
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
-          setRole(userDoc.data().role); // Hent brugerens rolle
+          setRole(userDoc.data().role);
         }
       }
     };
@@ -22,70 +22,76 @@ function Navbar() {
     fetchUserRole();
   }, []);
 
+  const styles = {
+    navbar: {
+      position: "fixed",
+      bottom: -10,
+      width: "100%",
+      display: "flex",
+      justifyContent: "space-around",
+      alignItems: "center",
+      backgroundColor: "#333",
+      color: "#fff",
+      padding: "10px 0",
+      zIndex: 1000, // Sørg for, at navbaren er øverst
+      borderTop: "2px solid #444",
+    },
+    link: {
+      textAlign: "center",
+      color: "white",
+      textDecoration: "none",
+    },
+    activeLink: {
+      color: "orange",
+    },
+    iconText: {
+      fontSize: "12px",
+      marginTop: "5px",
+    },
+  };
+
   return (
-    <nav
-      style={{
-        position: "fixed",
-        bottom: 0,
-        width: "100%",
-        display: "flex",
-        justifyContent: "space-around",
-        backgroundColor: "#333",
-        color: "#fff",
-        padding: "10px 0",
-      }}
-    >
-      {/* Home */}
+    <nav style={styles.navbar}>
       <Link
         to="/home"
         style={{
-          textAlign: "center",
-          color: location.pathname === "/home" ? "orange" : "white",
-          textDecoration: "none",
+          ...styles.link,
+          ...(location.pathname === "/home" ? styles.activeLink : {}),
         }}
       >
         <FaHome size={24} />
-        <p style={{ fontSize: "12px" }}>Home</p>
+        <p style={styles.iconText}>Home</p>
       </Link>
-
-      {/* Calendar */}
       <Link
         to="/calendar"
         style={{
-          textAlign: "center",
-          color: location.pathname === "/calendar" ? "orange" : "white",
-          textDecoration: "none",
+          ...styles.link,
+          ...(location.pathname === "/calendar" ? styles.activeLink : {}),
         }}
       >
         <FaCalendarAlt size={24} />
-        <p style={{ fontSize: "12px" }}>Calendar</p>
+        <p style={styles.iconText}>Calendar</p>
       </Link>
-
-      {/* Chat */}
       <Link
         to="/chat"
         style={{
-          textAlign: "center",
-          color: location.pathname === "/chat" ? "orange" : "white",
-          textDecoration: "none",
+          ...styles.link,
+          ...(location.pathname === "/chat" ? styles.activeLink : {}),
         }}
       >
         <FaComments size={24} />
-        <p style={{ fontSize: "12px" }}>Chat</p>
+        <p style={styles.iconText}>Chat</p>
       </Link>
-
-      {/* Admin (kun for admin) */}
       {role === "admin" && (
         <Link
           to="/admin"
           style={{
-            textAlign: "center",
-            color: location.pathname === "/admin" ? "orange" : "white",
-            textDecoration: "none",
+            ...styles.link,
+            ...(location.pathname === "/admin" ? styles.activeLink : {}),
           }}
         >
           <FaUserShield size={24} />
-          <p style={{ fontSize: "12px" }}>Admin</p>
+          <p style={styles.iconText}>Admin</p>
         </Link>
       )}
     </nav>

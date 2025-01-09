@@ -6,7 +6,7 @@ import fs from 'fs';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 // Læs JSON-filen og parse den
 const serviceAccount = JSON.parse(fs.readFileSync('./vagtplan-app-25476-firebase-adminsdk-mwuk7-b14db6a1bb.json', 'utf8'));
