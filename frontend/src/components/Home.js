@@ -1,3 +1,5 @@
+// File: src/components/Home.js
+
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Button, Card, CardContent, Grid, Divider, Modal } from "@mui/material";
 import { Calendar } from "react-calendar";
@@ -16,6 +18,7 @@ const Home = () => {
   const [allShifts, setAllShifts] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
 
+  // Fetch data when the component loads
   useEffect(() => {
     fetchNextShift();
     fetchRecentActivities();
@@ -24,13 +27,16 @@ const Home = () => {
     fetchAllShifts();
   }, []);
 
+  // Fetch the next shift for the logged-in user
   const fetchNextShift = async () => {
     try {
-      const employeeId = auth.currentUser?.uid;
+      const userId = auth.currentUser?.uid;
+      if (!userId) return;
+
       const shiftsRef = collection(db, "shifts");
       const q = query(
         shiftsRef,
-        where("employeeId", "==", employeeId),
+        where("employeeId", "==", userId),
         where("date", ">=", new Date().toISOString().split("T")[0]),
         orderBy("date", "asc")
       );
@@ -40,8 +46,8 @@ const Home = () => {
         setNextShift({
           date: new Date(next.date).toLocaleDateString(),
           time: `${next.startTime} - ${next.endTime}`,
-          location: next.location || "Ikke angivet",
           tasks: next.tasks || "Ingen opgaver",
+          location: next.location || "Ukendt sted",
         });
       }
     } catch (error) {
@@ -49,11 +55,14 @@ const Home = () => {
     }
   };
 
+  // Fetch recent activities
   const fetchRecentActivities = async () => {
     try {
-      const employeeId = auth.currentUser?.uid;
+      const userId = auth.currentUser?.uid;
+      if (!userId) return;
+
       const activitiesRef = collection(db, "activities");
-      const q = query(activitiesRef, where("employeeId", "==", employeeId), orderBy("timestamp", "desc"));
+      const q = query(activitiesRef, where("employeeId", "==", userId), orderBy("timestamp", "desc"));
       const snapshot = await getDocs(q);
       setRecentActivities(snapshot.docs.map((doc) => doc.data().description));
     } catch (error) {
@@ -61,11 +70,14 @@ const Home = () => {
     }
   };
 
+  // Fetch user statistics
   const fetchStats = async () => {
     try {
-      const employeeId = auth.currentUser?.uid;
+      const userId = auth.currentUser?.uid;
+      if (!userId) return;
+
       const shiftsRef = collection(db, "shifts");
-      const q = query(shiftsRef, where("employeeId", "==", employeeId), where("date", ">=", new Date().toISOString().split("T")[0]));
+      const q = query(shiftsRef, where("employeeId", "==", userId), where("date", ">=", new Date().toISOString().split("T")[0]));
       const snapshot = await getDocs(q);
       setStats({
         hoursWorked: snapshot.docs.reduce((total, doc) => total + (doc.data().hours || 0), 0),
@@ -76,11 +88,14 @@ const Home = () => {
     }
   };
 
+  // Fetch notifications
   const fetchNotifications = async () => {
     try {
-      const employeeId = auth.currentUser?.uid;
+      const userId = auth.currentUser?.uid;
+      if (!userId) return;
+
       const notificationsRef = collection(db, "notifications");
-      const q = query(notificationsRef, where("employeeId", "==", employeeId), orderBy("timestamp", "desc"));
+      const q = query(notificationsRef, where("employeeId", "==", userId), orderBy("timestamp", "desc"));
       const snapshot = await getDocs(q);
       setNotifications(snapshot.docs.map((doc) => doc.data().message));
     } catch (error) {
@@ -88,13 +103,16 @@ const Home = () => {
     }
   };
 
+  // Fetch all shifts for the pop-up
   const fetchAllShifts = async () => {
     try {
-      const employeeId = auth.currentUser?.uid;
+      const userId = auth.currentUser?.uid;
+      if (!userId) return;
+
       const shiftsRef = collection(db, "shifts");
       const q = query(
         shiftsRef,
-        where("employeeId", "==", employeeId),
+        where("employeeId", "==", userId),
         where("date", ">=", new Date().toISOString().split("T")[0]),
         orderBy("date", "asc")
       );
@@ -109,30 +127,36 @@ const Home = () => {
     }
   };
 
+  // Modal handling
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
 
   return (
     <Box p={3}>
-      {/* Velkomst */}
-      <Typography variant="h4" gutterBottom>Velkommen til Vagtplan App</Typography>
-      <Typography variant="subtitle1">Effektiv vagtplanlægning og kommunikation for din arbejdsplads.</Typography>
+      {/* Velkomsttekst */}
+      <Typography variant="h4" gutterBottom>
+        Velkommen til Vagtplan App
+      </Typography>
+      <Typography variant="subtitle1">
+        Effektiv vagtplanlægning og kommunikation for din arbejdsplads.
+      </Typography>
 
       {/* Profil-knap */}
-      <Button
-        onClick={() => navigate("/profile")}
-        variant="contained"
-        sx={{
-          position: "absolute",
-          top: "20px",
-          right: "20px",
-          backgroundColor: "#1976d2",
-        }}
-      >
-        Profil
-      </Button>
+      <Box sx={{ textAlign: "right", mt: 3 }}>
+        <Button
+          onClick={() => navigate("/profile")}
+          variant="contained"
+          sx={{
+            backgroundColor: "#1976d2",
+            padding: "10px 15px",
+            fontSize: "14px",
+          }}
+        >
+          Profil
+        </Button>
+      </Box>
 
-      {/* Næste Vagt */}
+      {/* Næste vagt */}
       <Card sx={{ my: 3, bgcolor: "#28a745", color: "white" }}>
         <CardContent>
           <Typography variant="h6">Din næste vagt:</Typography>
@@ -142,7 +166,9 @@ const Home = () => {
               <Typography variant="body1">Tid: {nextShift.time}</Typography>
               <Typography variant="body1">Opgaver: {nextShift.tasks}</Typography>
               <Typography variant="body1">Lokation: {nextShift.location}</Typography>
-              <Typography variant="body1">Countdown: <Countdown date={new Date(nextShift.date)} /></Typography>
+              <Typography variant="body1">
+                Countdown: <Countdown date={new Date(nextShift.date)} />
+              </Typography>
             </>
           ) : (
             <Typography variant="body1">Ingen kommende vagter.</Typography>

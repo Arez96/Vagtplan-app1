@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, db, setDoc, doc } from "../firebaseConfig";
+import logo from "../assets/logo.png"; // Importér logoet
 
 function Login() {
   const [email, setEmail] = useState(""); // Holder email-inputtet
@@ -40,7 +41,20 @@ function Login() {
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
+    <div
+      style={{
+        textAlign: "center",
+        backgroundColor: "#d0d7d9", // Opdateret baggrundsfarve
+        minHeight: "100vh", // Dækker hele skærmen
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      {/* Logo */}
+      <img src={logo} alt="Logo" style={{ width: "150px", marginBottom: "20px" }} />
+
       <h1>Velkommen til Vagtplan App</h1>
       <p>Log ind eller opret en konto</p>
       {error && <p style={{ color: "red" }}>{error}</p>}
@@ -65,7 +79,16 @@ function Login() {
             style={{ marginBottom: "10px", padding: "8px", width: "80%" }}
           />
         </div>
-        <button type="submit" style={{ padding: "10px 20px" }}>
+        <button
+          type="submit"
+          style={{
+            padding: "10px 20px",
+            backgroundColor: "#007BFF",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+          }}
+        >
           {isRegistering ? "Opret Konto" : "Log Ind"}
         </button>
       </form>
