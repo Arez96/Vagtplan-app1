@@ -118,6 +118,20 @@ const Home = () => {
       <Typography variant="h4" gutterBottom>Velkommen til Vagtplan App</Typography>
       <Typography variant="subtitle1">Effektiv vagtplanlægning og kommunikation for din arbejdsplads.</Typography>
 
+      {/* Profil-knap */}
+      <Button
+        onClick={() => navigate("/profile")}
+        variant="contained"
+        sx={{
+          position: "absolute",
+          top: "20px",
+          right: "20px",
+          backgroundColor: "#1976d2",
+        }}
+      >
+        Profil
+      </Button>
+
       {/* Næste Vagt */}
       <Card sx={{ my: 3, bgcolor: "#28a745", color: "white" }}>
         <CardContent>
