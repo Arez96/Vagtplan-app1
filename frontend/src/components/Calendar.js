@@ -1,3 +1,5 @@
+// File: src/components/Calendar.js
+
 import React, { useEffect, useState } from "react";
 import { db, auth } from "../firebaseConfig";
 import {
@@ -12,24 +14,25 @@ import {
 
 const styles = {
   container: {
-    margin: "0 10px 50px",
+    margin: "0 auto",
     padding: "20px",
     maxWidth: "800px",
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "#e3f2fd", // Light blue
     borderRadius: "10px",
-    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+    color: "#1e88e5", // Darker blue for text
   },
   header: {
     textAlign: "center",
     marginBottom: "20px",
-    fontSize: "24px",
+    fontSize: "28px",
     fontWeight: "bold",
-    color: "#333",
+    color: "#1565c0",
   },
   adminControls: {
     marginBottom: "20px",
-    padding: "10px",
-    backgroundColor: "#fff",
+    padding: "15px",
+    backgroundColor: "#ffffff",
     borderRadius: "10px",
     boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
   },
@@ -43,19 +46,21 @@ const styles = {
     padding: "10px",
     borderRadius: "5px",
     border: "1px solid #ccc",
+    fontSize: "16px",
   },
   button: {
     padding: "10px",
     border: "none",
     borderRadius: "5px",
     cursor: "pointer",
+    fontSize: "16px",
   },
   addButton: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#4caf50",
     color: "white",
   },
   editButton: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "#2196f3",
     color: "white",
     marginRight: "10px",
   },
@@ -65,19 +70,20 @@ const styles = {
   },
   shiftList: {
     marginTop: "20px",
+    backgroundColor: "#ffffff",
+    borderRadius: "10px",
+    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+    padding: "15px",
     maxHeight: "400px",
     overflowY: "auto",
-    backgroundColor: "#fff",
-    borderRadius: "10px",
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-    padding: "10px",
   },
   shiftItem: {
     padding: "15px",
     marginBottom: "10px",
     border: "1px solid #ddd",
     borderRadius: "10px",
-    backgroundColor: "#fdfdfd",
+    backgroundColor: "#f1f8e9", // Light green
+    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
   },
 };
 
