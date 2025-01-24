@@ -7,10 +7,11 @@ import "react-calendar/dist/Calendar.css"; // Import calendar styles
 import Countdown from "react-countdown";
 import { useNavigate } from "react-router-dom";
 import { db, auth } from "../firebaseConfig";
-import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
+import { collection, query, where, orderBy, getDocs, doc, getDoc } from "firebase/firestore";
 
 const Home = () => {
   const navigate = useNavigate();
+  const [userName, setUserName] = useState(""); // State til brugerens navn
   const [nextShift, setNextShift] = useState(null);
   const [recentActivities, setRecentActivities] = useState([]);
   const [stats, setStats] = useState({ hoursWorked: 0, upcomingShifts: 0 });
@@ -18,7 +19,29 @@ const Home = () => {
   const [allShifts, setAllShifts] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
 
-  // Fetch data when the component loads
+  // Hent brugerens navn
+  useEffect(() => {
+    const fetchUserName = async () => {
+      const userId = auth.currentUser?.uid;
+      if (!userId) return;
+
+      try {
+        const userDoc = await getDoc(doc(db, "users", userId)); // Hent brugerens dokument
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setUserName(`${userData.firstName || ""} ${userData.lastName || ""}`); // Sæt fornavn og efternavn
+        } else {
+          console.error("Brugerdata findes ikke.");
+        }
+      } catch (error) {
+        console.error("Fejl ved hentning af brugerens navn:", error);
+      }
+    };
+
+    fetchUserName();
+  }, []);
+
+  // Fetch other data when the component loads
   useEffect(() => {
     fetchNextShift();
     fetchRecentActivities();
@@ -27,7 +50,6 @@ const Home = () => {
     fetchAllShifts();
   }, []);
 
-  // Fetch the next shift for the logged-in user
   const fetchNextShift = async () => {
     try {
       const userId = auth.currentUser?.uid;
@@ -55,7 +77,6 @@ const Home = () => {
     }
   };
 
-  // Fetch recent activities
   const fetchRecentActivities = async () => {
     try {
       const userId = auth.currentUser?.uid;
@@ -70,7 +91,6 @@ const Home = () => {
     }
   };
 
-  // Fetch user statistics
   const fetchStats = async () => {
     try {
       const userId = auth.currentUser?.uid;
@@ -88,7 +108,6 @@ const Home = () => {
     }
   };
 
-  // Fetch notifications
   const fetchNotifications = async () => {
     try {
       const userId = auth.currentUser?.uid;
@@ -103,7 +122,6 @@ const Home = () => {
     }
   };
 
-  // Fetch all shifts for the pop-up
   const fetchAllShifts = async () => {
     try {
       const userId = auth.currentUser?.uid;
@@ -127,18 +145,17 @@ const Home = () => {
     }
   };
 
-  // Modal handling
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
 
   return (
     <Box p={3}>
-      {/* Velkomsttekst */}
+      {/* Velkomsttekst med brugerens navn */}
       <Typography variant="h4" gutterBottom>
         Velkommen til Vagtplan App
       </Typography>
-      <Typography variant="subtitle1">
-        Effektiv vagtplanlægning og kommunikation for din arbejdsplads.
+      <Typography variant="subtitle1" sx={{ mb: 2 }}>
+        {userName ? `Velkommen tilbage, ${userName}!` : "Effektiv vagtplanlægning og kommunikation for din arbejdsplads."}
       </Typography>
 
       {/* Profil-knap */}
@@ -230,7 +247,7 @@ const Home = () => {
       </Card>
 
       {/* Kalender */}
-      <Card sx={{ my: 3 }}>
+      <Card sx={{ my: 3, margin: "0 0 10% 0" }}>
         <CardContent>
           <Typography variant="h6">Kalender:</Typography>
           <Calendar />

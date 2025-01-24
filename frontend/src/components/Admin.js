@@ -7,7 +7,6 @@ import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 const styles = {
   container: {
     margin: "0 auto",
-    padding: "20px",
     backgroundColor: "#f5f5f5",
     borderRadius: "10px",
     boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
@@ -26,13 +25,14 @@ const styles = {
   },
   stats: {
     display: "flex",
-    justifyContent: "space-between",
-    marginBottom: "20px",
+    justifyContent: "center",
+    margin: "10px 10px 20px 10px",
     gap: "10px",
+    
   },
   statCard: {
     flex: "1",
-    padding: "15px",
+    padding: "10px",
     backgroundColor: "white",
     borderRadius: "10px",
     textAlign: "center",
@@ -51,6 +51,7 @@ const styles = {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
     gap: "15px",
+    margin: "10px 10px 20px 10px",
   },
   card: {
     padding: "15px",
